@@ -1,7 +1,9 @@
+#[cfg(feature = "futures_api")]
+use crate::rest_model::SymbolStatus;
+use crate::rest_model::{string_or_float, Asks, Bids, OrderBook, OrderSide, OrderStatus, OrderType, TimeInForce};
+
+#[cfg(feature = "futures_api")]
 use crate::futures::rest_model::ContractType;
-use crate::rest_model::{
-    string_or_float, Asks, Bids, OrderBook, OrderSide, OrderStatus, OrderType, SymbolStatus, TimeInForce,
-};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(tag = "e")]
@@ -26,6 +28,8 @@ pub enum WebsocketEvent {
     OrderUpdate(Box<OrderUpdate>),
     #[serde(alias = "listStatus")]
     ListOrderUpdate(Box<OrderListUpdate>),
+
+    #[cfg(feature = "futures_api")]
     #[serde(alias = "contractInfo")]
     ContractInfoUpdate(Box<ContractInfoUpdate>),
 }
@@ -493,7 +497,7 @@ pub struct OrderListTransaction {
     pub client_order_id: String,
 }
 
-/// For OCO Events
+#[cfg(feature = "futures_api")]
 #[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct ContractInfoUpdate {
