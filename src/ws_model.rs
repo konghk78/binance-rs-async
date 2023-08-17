@@ -35,7 +35,7 @@ pub enum WebsocketEvent {
 
     #[cfg(feature = "futures_api")]
     #[serde(alias = "markPriceUpdate")]
-    MarkPriceUpdate(Box<MarkPriceUpdate>),
+    MarkPriceUpdate(Box<Vec<MarkPriceUpdate>>),
 }
 
 #[derive(Serialize, Deserialize, Debug)]
