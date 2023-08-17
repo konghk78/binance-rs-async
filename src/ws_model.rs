@@ -32,6 +32,10 @@ pub enum WebsocketEvent {
     #[cfg(feature = "futures_api")]
     #[serde(alias = "contractInfo")]
     ContractInfoUpdate(Box<ContractInfoUpdate>),
+
+    #[cfg(feature = "futures_api")]
+    #[serde(alias = "markPriceUpdate")]
+    MarkPriceUpdate(Box<MarkPriceUpdate>),
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -515,4 +519,28 @@ pub struct ContractInfoUpdate {
     pub onboard_date: u64,
     #[serde(rename = "cs")]
     pub status: SymbolStatus,
+}
+
+#[cfg(feature = "futures_api")]
+#[derive(Debug, Serialize, Deserialize, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct MarkPriceUpdate {
+    #[serde(rename = "E")]
+    pub event_time: u64,
+    #[serde(rename = "s")]
+    pub symbol: String,
+    #[serde(rename = "p")]
+    #[serde(with = "string_or_float")]
+    pub mark_price: f64,
+    #[serde(rename = "i")]
+    #[serde(with = "string_or_float")]
+    pub index_price: f64,
+    #[serde(rename = "P")]
+    #[serde(with = "string_or_float")]
+    pub estimated_settled_price: f64,
+    #[serde(rename = "r")]
+    #[serde(with = "string_or_float")]
+    pub funding_rate: f64,
+    #[serde(rename = "T")]
+    pub next_funding_time: u64,
 }
