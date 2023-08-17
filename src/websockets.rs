@@ -67,8 +67,8 @@ pub fn contract_info_stream() -> &'static str {
     "!contractInfo"
 }
 
-pub fn mark_price_stream() -> &'static str {
-    "!markPrice@arr@1s"
+pub fn mark_price_stream(symbol: &str) -> String {
+    format!("{symbol}@markPrice@1s")
 }
 
 /// # Arguments
