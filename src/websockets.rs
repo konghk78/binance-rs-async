@@ -67,6 +67,10 @@ pub fn contract_info_stream() -> &'static str {
     "!contractInfo"
 }
 
+pub fn mark_price_stream() -> &'static str {
+    "!markPrice@arr@1s"
+}
+
 /// # Arguments
 ///
 /// * `symbol`: the market symbol
