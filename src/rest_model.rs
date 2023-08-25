@@ -482,6 +482,43 @@ pub enum TimeInForce {
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Eq)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+pub enum ExecutionType {
+    New,
+    Canceled,
+    Calculated,
+    Expired,
+    Trade,
+    Amendment,
+    #[serde(other)]
+    Other,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Eq)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+pub enum ReasonType {
+    Deposit,
+    Withdraw,
+    Order,
+    FundingFee,
+    WithdrawReject,
+    Adjustment,
+    InsuranceClear,
+    AdminDeposit,
+    AdminWithdraw,
+    MarginTransfer,
+    MarginTypeChange,
+    AssetTransfer,
+    OptionsPremiumFee,
+    OptionsSettleProfit,
+    AutoExchange,
+    CoinSwapDeposit,
+    CoinSwapWithdraw,
+    #[serde(other)]
+    Other,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Eq)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum OrderResponse {
     Ack,
     Result,
@@ -1245,6 +1282,13 @@ pub enum OrderStatus {
     Expired,
     /// Part of the order or all of the order's quantity has filled.
     Trade,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Eq)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+pub enum PositionSide {
+    Long,
+    Short,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Eq)]

@@ -2,7 +2,10 @@ use crate::client::*;
 use crate::errors::*;
 use crate::rest_model::*;
 
+#[cfg(not(feature = "futures_api"))]
 static USER_DATA_STREAM: &str = "/api/v3/userDataStream";
+#[cfg(feature = "futures_api")]
+static USER_DATA_STREAM: &str = "/fapi/v1/listenKey";
 
 #[derive(Clone)]
 pub struct UserStream {
@@ -20,7 +23,9 @@ impl UserStream {
     /// assert!(start.is_ok(), "{:?}", start);
     /// assert!(start.unwrap().listen_key.len() > 0)
     /// ```
-    pub async fn start(&self) -> Result<UserDataStream> { self.client.post(USER_DATA_STREAM, None).await }
+    pub async fn start(&self) -> Result<UserDataStream> {
+        self.client.post(USER_DATA_STREAM, None).await
+    }
 
     /// Keep the connection alive, as the listen key becomes invalid after 60mn
     /// # Examples
