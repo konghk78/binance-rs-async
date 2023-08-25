@@ -1,6 +1,7 @@
-#[cfg(feature = "futures_api")]
-use crate::rest_model::SymbolStatus;
 use crate::rest_model::{string_or_float, Asks, Bids, OrderBook, OrderSide, OrderStatus, OrderType, TimeInForce};
+
+#[cfg(feature = "futures_api")]
+use crate::rest_model::{string_or_float_opt, ExecutionType, PositionSide, ReasonType, SymbolStatus};
 
 #[cfg(feature = "futures_api")]
 use crate::futures::rest_model::ContractType;
@@ -36,6 +37,14 @@ pub enum WebsocketEvent {
     #[cfg(feature = "futures_api")]
     #[serde(alias = "markPriceUpdate")]
     MarkPriceUpdate(Box<MarkPriceUpdate>),
+
+    #[cfg(feature = "futures_api")]
+    #[serde(alias = "ORDER_TRADE_UPDATE")]
+    FuturesOrderUpdate(Box<FuturesOrderUpdate>),
+
+    #[cfg(feature = "futures_api")]
+    #[serde(alias = "ACCOUNT_UPDATE")]
+    FuturesAccountUpdate(Box<FuturesAccountUpdate>),
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -543,4 +552,152 @@ pub struct MarkPriceUpdate {
     pub funding_rate: f64,
     #[serde(rename = "T")]
     pub next_funding_time: u64,
+}
+
+#[cfg(feature = "futures_api")]
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct OrderDetail {
+    #[serde(rename = "s")]
+    pub symbol: String,
+    #[serde(rename = "c")]
+    pub client_order_id: Option<String>,
+    #[serde(rename = "S")]
+    pub side: OrderSide,
+    #[serde(rename = "o")]
+    pub order_type: OrderType,
+    #[serde(rename = "f")]
+    pub time_in_force: TimeInForce,
+    #[serde(rename = "q")]
+    #[serde(with = "string_or_float")]
+    pub original_quantity: f64,
+    #[serde(rename = "p")]
+    #[serde(with = "string_or_float")]
+    pub original_price: f64,
+    #[serde(rename = "ap")]
+    #[serde(with = "string_or_float")]
+    pub average_price: f64,
+    #[serde(rename = "sp")]
+    #[serde(with = "string_or_float")]
+    pub stop_price: f64,
+    #[serde(rename = "x")]
+    pub execution_type: ExecutionType,
+    #[serde(rename = "X")]
+    pub order_status: OrderStatus,
+    #[serde(rename = "i")]
+    pub order_id: i64,
+    #[serde(rename = "l")]
+    #[serde(with = "string_or_float")]
+    pub last_filled_quantity: f64,
+    #[serde(rename = "z")]
+    #[serde(with = "string_or_float")]
+    pub filled_accumulated_quantity: f64,
+    #[serde(rename = "L")]
+    #[serde(with = "string_or_float")]
+    pub last_filled_price: f64,
+    #[serde(rename = "N")]
+    pub commission_asset: Option<String>,
+    #[serde(rename = "n")]
+    #[serde(with = "string_or_float_opt")]
+    pub commission: Option<f64>,
+    #[serde(rename = "T")]
+    pub order_trade_time: u64,
+    #[serde(rename = "t")]
+    pub trade_id: u64,
+    #[serde(rename = "b")]
+    #[serde(with = "string_or_float")]
+    pub bid_notional: f64,
+    #[serde(rename = "a")]
+    #[serde(with = "string_or_float")]
+    pub ask_notional: f64,
+    #[serde(rename = "m")]
+    pub maker_side: bool,
+    #[serde(rename = "R")]
+    pub reduce_only: bool,
+    #[serde(rename = "ot")]
+    pub original_order_type: OrderType,
+    #[serde(rename = "ps")]
+    pub position_side: PositionSide,
+    #[serde(rename = "rp")]
+    #[serde(with = "string_or_float")]
+    pub realized_profit: f64,
+}
+
+#[cfg(feature = "futures_api")]
+#[derive(Debug, Serialize, Deserialize, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct FuturesOrderUpdate {
+    #[serde(rename = "E")]
+    pub event_time: u64,
+    #[serde(rename = "T")]
+    pub transaction_time: u64,
+    #[serde(rename = "o")]
+    pub order_detail: OrderDetail,
+}
+
+#[cfg(feature = "futures_api")]
+#[derive(Debug, Serialize, Deserialize, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct Balance {
+    #[serde(rename = "a")]
+    pub asset: String,
+    #[serde(rename = "wb")]
+    #[serde(with = "string_or_float")]
+    pub wallet_balance: f64,
+    #[serde(rename = "cw")]
+    #[serde(with = "string_or_float")]
+    pub cross_wallet_balance: f64,
+    #[serde(rename = "bc")]
+    #[serde(with = "string_or_float")]
+    pub balance_change_without_pnl_and_commission: f64,
+}
+
+#[cfg(feature = "futures_api")]
+#[derive(Debug, Serialize, Deserialize, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct Position {
+    #[serde(rename = "s")]
+    pub symbol: String,
+    #[serde(rename = "pa")]
+    #[serde(with = "string_or_float")]
+    pub position_amount: f64,
+    #[serde(rename = "ep")]
+    #[serde(with = "string_or_float")]
+    pub entry_price: f64,
+    #[serde(rename = "cr")]
+    #[serde(with = "string_or_float")]
+    pub accumulated_realized: f64, // (Pre-fee) Accumulated Realized
+    #[serde(rename = "up")]
+    #[serde(with = "string_or_float")]
+    pub unrealized_pnl: f64,
+    #[serde(rename = "mt")]
+    pub margin_type: String,
+    #[serde(rename = "iw")]
+    #[serde(with = "string_or_float")]
+    pub isolated_wallet: f64,
+    #[serde(rename = "ps")]
+    pub position_side: String,
+}
+
+#[cfg(feature = "futures_api")]
+#[derive(Debug, Serialize, Deserialize, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct AccountUpdateData {
+    #[serde(rename = "m")]
+    pub event_reason_type: ReasonType,
+    #[serde(rename = "B")]
+    pub balances: Vec<Balance>,
+    #[serde(rename = "P")]
+    pub positions: Vec<Position>,
+}
+
+#[cfg(feature = "futures_api")]
+#[derive(Debug, Serialize, Deserialize, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct FuturesAccountUpdate {
+    #[serde(rename = "E")]
+    pub event_time: u64,
+    #[serde(rename = "T")]
+    pub transaction_time: u64,
+    #[serde(rename = "a")]
+    pub update_data: AccountUpdateData,
 }

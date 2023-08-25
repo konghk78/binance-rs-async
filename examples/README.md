@@ -12,6 +12,8 @@ cargo run --release --example "binance_websockets"
 
 cargo run --release --example "binance_save_all_trades"
 
+cargo run --release --example "binance_websockets_heejin" --features="futures_api"
+
 tmux new -s <session name>
 
 tmux a -t <session id>
